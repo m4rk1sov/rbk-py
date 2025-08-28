@@ -1,0 +1,6 @@
+env: dev
+jwt:
+  token_ttl: 1h
+http:
+  port: 8081
+  timeout: 1h
