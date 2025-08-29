@@ -3,4 +3,10 @@ jwt:
   token_ttl: 1h
 http:
   port: 8081
-  timeout: 1h
+  read_timeout: 10s
+  write_timeout: 15s
+  idle_timeout: 2m
+static_token: "static_token"
+template_dir: "./templates"
+service_context_url: "/document-generator"
+pdf_converter_url: "http://gotenberg:3000"
