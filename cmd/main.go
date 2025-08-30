@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"net/http"
 	"os"
@@ -29,9 +30,9 @@ func main() {
 	cfg := config.Load()
 	log := setupLogger(cfg.Env)
 
-	srv := httpserver.New(*cfg)
+	srv := httpserver.New(cfg)
 	go func() {
-		if err := srv.Start(); err != nil && err != http.ErrServerClosed {
+		if err := srv.Start(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Error("failed to start the server: x", err)
 			panic(err)
 		}
