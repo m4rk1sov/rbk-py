@@ -12,7 +12,7 @@ type Config struct {
 	Env               string     `json:"env" yaml:"env" env-default:"dev"`
 	JWT               JWTConfig  `yaml:"jwt"`
 	HTTP              HTTPConfig `yaml:"http"`
-	StaticToken       string     `yaml:"static_token" env:"STATIC_TOKEN" env-default:"static_token"`
+	StaticToken       string     `yaml:"static_token" env:"STATIC_TOKEN" env-default:"default_token"`
 	TemplateDir       string     `yaml:"template_dir" env:"TEMPLATE_DIR" env-default:"./templates"`
 	ServiceContextURL string     `yaml:"service_context_url" env-default:"/document-generator"`
 	PDFConverterURL   string     `yaml:"pdf_converter_url" env-default:"http://gotenberg:3000"`

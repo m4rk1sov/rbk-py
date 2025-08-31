@@ -4,10 +4,12 @@ import (
 	"context"
 	"fmt"
 	"github.com/m4rk1sov/rbk-py/internal/middleware"
+	"github.com/m4rk1sov/rbk-py/internal/web"
+	"github.com/m4rk1sov/rbk-py/templates"
 	"net/http"
 	"path/filepath"
 	"time"
-
+	
 	"github.com/gin-gonic/gin"
 	"github.com/m4rk1sov/rbk-py/internal/config"
 )
@@ -20,15 +22,15 @@ type Server struct {
 	http   *http.Server
 }
 
-func New(cfg *config.Config) *Server {
+func New(cfg config.Config) *Server {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 	r.Use(gin.Recovery())
 	r.Use(middleware.RequestLogger())
-
+	
 	api := r.Group(filepath.Join(cfg.ServiceContextURL, apiVersion))
 	api.Use(middleware.Auth(cfg.StaticToken, cfg.JWT.Secret))
-
+	
 	api.GET("/templates", func(c *gin.Context) {
 		list, err := templates.List(cfg.TemplateDir)
 		if err != nil {
@@ -37,14 +39,14 @@ func New(cfg *config.Config) *Server {
 		}
 		web.OK(c, gin.H{"templates": list})
 	})
-
+	
 	api.POST("/generate-html", handleGenerateHTML(cfg))
 	api.POST("/generate-pdf", handleGeneratePDF(cfg))
 	api.POST("/generate-docx", handleGenerateDOCX(cfg))
 	api.POST("/generate-xlsx", handleGenerateXLSX(cfg))
-
+	
 	return &Server{
-		cfg:    *cfg,
+		cfg:    cfg,
 		engine: r,
 		http: &http.Server{
 			Addr:         fmt.Sprintf(":%d", cfg.HTTP.Port),

@@ -1,0 +1,18 @@
+version: "3.8"
+services:
+  docgen:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - STATIC_TOKEN=default_token
+      - JWT_SECRET=dev_secret
+      - SERVICE_CONTEXT_URL=/document-generator
+      - PDF_CONVERTER_URL=http://gotenberg:3000
+    depends_on:
+      - gotenberg
+  gotenberg:
+    image: gotenberg/gotenberg:8
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
