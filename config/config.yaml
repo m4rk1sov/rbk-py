@@ -1,12 +1,14 @@
 env: dev
 jwt:
   token_ttl: 1h
+  secret: "jwt_secret"
 http:
-  port: 3100
+  port: 8000
   read_timeout: 10s
   write_timeout: 15s
   idle_timeout: 2m
-static_token: "static_token"
+static_token: "default_token"
 template_dir: "./templates"
 service_context_url: "/document-generator"
 pdf_converter_url: "http://gotenberg:3000"
+docx_converter_url: "http://localhost:3100"

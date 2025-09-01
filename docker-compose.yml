@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   docgen:
     build: .
@@ -9,6 +8,9 @@ services:
       - JWT_SECRET=dev_secret
       - SERVICE_CONTEXT_URL=/document-generator
       - PDF_CONVERTER_URL=http://gotenberg:3000
+      - DOCX_CONVERTER_URL=http://localhost:3100
+      - ENABLE_HTML_FALLBACK=true
+      - CONVERSION_TIMEOUT=30
     depends_on:
       - gotenberg
   gotenberg:

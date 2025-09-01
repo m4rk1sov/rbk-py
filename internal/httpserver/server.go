@@ -6,8 +6,9 @@ import (
 	"github.com/m4rk1sov/rbk-py/internal/middleware"
 	"github.com/m4rk1sov/rbk-py/internal/web"
 	"github.com/m4rk1sov/rbk-py/templates"
+	"log/slog"
 	"net/http"
-	"path/filepath"
+	"strings"
 	"time"
 	
 	"github.com/gin-gonic/gin"
@@ -28,7 +29,13 @@ func New(cfg config.Config) *Server {
 	r.Use(gin.Recovery())
 	r.Use(middleware.RequestLogger())
 	
-	api := r.Group(filepath.Join(cfg.ServiceContextURL, apiVersion))
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	})
+	
+	joined := strings.TrimRight(cfg.ServiceContextURL, "/") + "/" + strings.TrimLeft(apiVersion, "/")
+	api := r.Group(joined)
+	slog.Info(fmt.Sprintf("%s", joined))
 	api.Use(middleware.Auth(cfg.StaticToken, cfg.JWT.Secret))
 	
 	api.GET("/templates", func(c *gin.Context) {
@@ -49,7 +56,7 @@ func New(cfg config.Config) *Server {
 		cfg:    cfg,
 		engine: r,
 		http: &http.Server{
-			Addr:         fmt.Sprintf(":%d", cfg.HTTP.Port),
+			Addr:         fmt.Sprintf("localhost:%d", cfg.HTTP.Port),
 			Handler:      r,
 			ReadTimeout:  cfg.HTTP.ReadTimeout,
 			WriteTimeout: cfg.HTTP.WriteTimeout,
